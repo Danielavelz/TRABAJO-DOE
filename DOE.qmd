@@ -1,0 +1,567 @@
+---
+title: "DOE"
+author: 
+  - name: "Maria Camila Toro Durán"
+  - name: "Liz Dayana Rojas Cortés"
+  - name: "Alexandra Daniela Velez De La Hoz"
+lang : es  
+format:
+  html:
+    toc: true 
+    toc-location: left 
+editor: visual
+theme: slate
+number-sections: true
+editor_options: 
+  chunk_output_type: console
+---
+
+## **Objetivo general**
+
+1.1 Evaluar de manera integral el impacto de los diferentes factores, sobre el tiempo de producción en la industria textil, con el propósito de identificar áreas de mejora y oportunidades de optimización que impulsen la eficiencia y competitividad en el proceso de producción.
+
+Este objetivo busca no solo comprender la influencia de los factores mencionados en el tiempo de producción, sino también proponer estrategias y acciones concretas para mejorar el rendimiento del proceso textil, teniendo en cuenta la complejidad y dinamismo característico de la industria.
+
+## **Objetivos especificos**
+
+2.1 Evaluar el impacto de la disposición de los operadores en el tiempo de producción.
+
+2.2 Analizar el efecto del tipo de tela en el tiempo de producción.
+
+2.3 Identificar el proceso que genera más tiempo de producción.
+
+## **Introducción**
+
+En la ingeniería industrial, la optimización de procesos de producción es esencial para mantener la eficiencia y competitividad en el mercado. En este contexto, el diseño factorial se presenta como una herramienta poderosa para investigar y comprender el impacto de múltiples factores en el rendimiento de un sistema. Este estudio se centra en la industria textil, donde el proceso de fusionar telas es crucial. Fusionar telas implica unir dos o más capas mediante calor, presión y, en ocasiones, adhesivos, con el fin de proporcionar estructura, rigidez y un mejor acabado a las prendas
+
+Mediante un diseño experimental factorial, analizaremos la combinación de diferentes tipos de telas y sus características para identificar los factores que más influyen en el tiempo necesario para fusionarlas. Este enfoque nos permitirá explorar cómo estas variables afectan el tiempo de producción, identificar patrones de comportamiento y establecer relaciones causales entre los factores y la variable de respuesta. De esta manera, podremos identificar áreas de mejora y oportunidades de optimización que incrementen la eficiencia y competitividad en la industria textil.
+
+Este estudio se enfoca en evaluar el impacto de diversos factores en el tiempo de producción en la industria textil, un sector conocido por su dinamismo y demandas de eficiencia. Los factores analizados incluyen el tipo de tela, parte de la prenda a fusionar y el tamaño de la tela, seleccionados por su relevancia en el proceso de producción textil y su potencial influencia en el tiempo de producción.
+
+Nuestro trabajo ofrece una visión analítica y sistemática para enfrentar los desafíos de la gestión de procesos en la industria textil, con el objetivo de promover la excelencia operativa y el éxito sostenible en un entorno empresarial cada vez más dinámico y exigente.
+
+## **Descripción diagrama del proceso**
+
+![Diagrama de proceso](imagenes/Diagramdeproceso.jpg){#fig-RH}
+
+En el diseño experimental, se implementó un proceso de aleatorización con la función "sample" para garantizar la validez y fiabilidad de los resultados en la evaluación del impacto de diferentes factores en el tiempo de producción. Este proceso se busca minimizar sesgos y controlar la variabilidad entre los tratamientos aplicados, asegurando la imparcialidad del estudio.
+
+Cada tratamiento fue representado por tres telas diferentes, seleccionadas aleatoriamente, y se asignaron tipos de tela específicas a cada una de las operarias (en este caso las 3 integrantes del grupo), garantizando una distribución equitativa y aleatoria de los tratamientos.
+
+```{r}
+#| echo: false
+#| warning: false
+#x<-c("agricolae","pwr","gplots","graphics","car","tseries","nortest","goftest","lmtest","readxl","devtools")
+#install.packages(x)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+library(agricolae) 
+library(pwr)
+library(gplots)
+library(graphics) 
+library(car) 
+library(tseries) 
+library(nortest) 
+library(goftest) 
+library(lmtest) 
+library(readxl)
+library(ggplot2)
+library(gplots)
+library(devtools)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+library(readxl)
+Tela <- read_excel("Tela.xlsx")
+View(Tela)
+```
+
+# **Análisis descriptivo**
+
+## **Efectos principales**
+
+## Tamaño Vs Tiempo
+
+Aunque los tiempos para el tamaño grande son mayores, el promedio para el tamaño mediano es superior. Esto podría explicarse por el hecho de que los tiempos en el tamaño mediano tienden a ser muy altos en su mayoría. En contraste, para el tamaño pequeño, los tiempos son menores como se esperaba, ya que son piezas que se pueden realizar con mayor facilidad.
+
+```{r}
+#| echo: false
+#| warning: false
+par(mfrow=c(1,3))
+#Boxplot comparativo de tamaño y tiempo
+boxplot(Tiempo ~ Tamaño, data= Tela)
+ggplot(Tela, aes(group=Tamaño,y=Tiempo))+
+  geom_boxplot()
+```
+
+## Tipo de tela Vs Tiempo
+
+Los gráficos revelan que el promedio de tiempo para fusionar telas viscosas y suaves es similar, ambos por debajo de los 120 segundos. En contraste, el promedio de tiempo para la tela rígida es considerablemente más alto, alcanzando aproximadamente los 130 segundos. Esto sugiere que la tela rígida puede presentar una mayor complejidad en el proceso de fusión en comparación con las telas viscosas y suaves.
+
+```{r}
+#| echo: false
+#| warning: false
+#Boxplot comparativo de tipo de tela y tiempo
+boxplot(Tiempo ~ Tipo, data = Tela)
+ggplot(Tela, aes(group=Tipo,y=Tiempo))+
+  geom_boxplot()
+```
+
+## Partes de la prenda Vs Tiempo
+
+El promedio de las tres partes es muy similar,ninguna supera los 120 segundos, lo que nos podria indicar que no es muy importante o de mucha relevancia al momento de definir el tiempo.
+
+```{r}
+#| echo: false
+#| warning: false
+#Boxplot comparativo de partes de la prenda y tiempo
+boxplot(Tiempo ~ Partes, data = Tela)
+ggplot(Tela, aes(group=Partes,y=Tiempo))+
+  geom_boxplot()
+```
+
+Podemos observar con el grafico de medias que las mas significativas van a ser el tipo de tela que usemos y el tamaño de la misma, debido a que sus pendientes son muy pronunciadas en comparacion a la de partes que nos indica la parte en la que va ubicada cuando la prenda esté terminada.
+
+```{r}
+#| echo: false
+#| warning: false
+library(gplots)
+plotmeans(Tiempo ~ Tamaño, data = Tela)
+plotmeans(Tiempo ~ Tipo, data = Tela)
+plotmeans(Tiempo ~ Partes, data = Tela)
+```
+
+## **Gráfico de diseño**
+
+Observamos que el promedio de todas las observaciones es de aproximadamente 111 segundos. La variable "partes", que indica la parte específica de la prenda en la que se realiza la fusión, resulta ser la menos relevante en cuanto al tiempo promedio del proceso. El tipo de tela tiene una influencia mayor, con las telas 3 (suave) y 2 (rígida) siendo las más significativas. Finalmente, el factor más importante es el tamaño de la prenda, con el tamaño pequeño siendo el más eficiente en términos de tiempo promedio.
+
+```{r}
+#| echo: false
+#| warning: false
+#grafica de los efectos principales(grafico de diseño)
+
+tamaño <- as.factor(Tela$Tamaño)
+tipo <- as.factor(Tela$Tipo)
+partes <- as.factor(Tela$Partes)
+
+formula <- Tela$Tiempo ~ tamaño + tipo + partes
+plot.design(formula, col = "purple",xlab = "variables", ylab = "Tiempo promedio")
+
+```
+
+## **Efectos de interacción**
+
+### Tipo de tela
+
+Al analizar el tipo de tela utilizado, observamos que podría haber interacción entre la viscosa (1) y la rígida (2). Sin embargo, la tela suave (3) no muestra interacción con ninguna de las otras, lo cual se evidencia en su pendiente. Esta pendiente es muy similar a la de la tela viscosa y, en el caso de la tela rígida, el gráfico resulta casi paralelo.
+
+```{r}
+#| echo: false
+#| warning: false
+par(mfrow=c(1,3))
+interaction.plot(Tela$Tamaño, Tela$Tipo, Tela$Tiempo, fun = median, xlab = "Tamaño", ylab = "Tiempo promedio",trace.label ="tipo" )
+
+```
+
+En este caso contamos con interaccion entre la parte de los puños(2) con los cuellos(1) y los ribetes(3),debido a que sus graficas se cruzan indicandonos la interaccion que tienen, por el contrario, cuando observamos la parte de cuello con respecto a los ribetes nos muestra una lineas muy paralelas que nos indican que no cuentan con interaccion.
+
+```{r}
+#| echo: false
+#| warning: false
+interaction.plot(Tela$Tamaño, Tela$Partes, Tela$Tiempo, fun = median,xlab = "Tamaño", ylab = "Tiempo promedio",trace.label = "partes")
+```
+
+Para finalizar podriamos inferir que ningún tipo de tela usado en el proceso de fusion tiene interaccion, ya que son lineas que practicamente ni se cruzan entre ellas y hay algunas que tienden a ser muy paralelas.
+
+```{r}
+#| echo: false
+#| warning: false
+interaction.plot(Tela$Partes, Tela$Tipo, Tela$Tiempo, fun = median,xlab = "Partes", ylab = "Tiempo promedio",trace.label = "tipo")
+```
+
+## **Medidas descriptivas**
+
+# Media del tamaño
+
+Las medias para los tamaños grande y pequeño se encuentran muy similares,debido a que su tiempo promedio es parecido en el proceso de fusion, sin embargo, para el tamaño pequeño podemos observar una notable disminucion llegando a los 86 segundos.
+
+```{r}
+#| echo: false
+#| warning: false
+
+tapply(Tela$Tiempo, Tela$Tamaño, mean)
+```
+
+Para el tipo de tela, observamos que la tela suave tiene la media más baja, con un promedio de 101 segundos para el proceso. En contraste, la tela rígida tiene un promedio de 121 segundos, siendo este el proceso más demorado.
+
+```{r}
+#| echo: false
+#| warning: false
+tapply(Tela$Tiempo, Tela$Tipo, mean)
+```
+
+De los tres factores, este es el que menos varía en comparación con la media de sus tiempos, situándose entre 107 y 117 segundos para realizar los procesos. Esto sugiere que el factor "partes" no es una característica importante en relación con la variable de respuesta.
+
+```{r}
+#| echo: false
+#| warning: false
+tapply(Tela$Tiempo, Tela$Partes, mean)
+```
+
+La variabilidad de los datos en relación con los tres factores involucrados no es significativa. Para el tipo de tela, los valores están entre 21 y 28 segundos, lo que indica que este factor tiene la mayor dispersión de los datos. En cuanto al tamaño, los valores oscilan entre 19 y 22 segundos, siendo este el factor con menor variabilidad. Por último, la desviación de la variable "Partes" varía entre 25 y 31 segundos.
+
+```{r}
+#| echo: false
+#| warning: false
+tapply(Tela$Tiempo, Tela$Tipo, sd)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+tapply(Tela$Tiempo, Tela$Tamaño, sd)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+tapply(Tela$Tiempo, Tela$Partes, sd)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+tapply(Tela$Tiempo, Tela$Partes, summary)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+tapply(Tela$Tiempo, Tela$Tipo, summary)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+tapply(Tela$Tiempo, Tela$Tamaño, summary)
+```
+
+# **Ajustar modelos**
+
+Observamos que el modelo inicial indicaba que la triple interacción no era significativa, ya que el valor p es mayor a 0.05. Al eliminar esa interacción, descubrimos que solo dos variables resultaron ser significativas en el modelo: el tamaño de la tela y el tipo de tela utilizado para la fusión, lo que nnos indica que un cambio en estos dos factores impactaria la variable respuesta.
+
+```{r}
+#| echo: false
+#| warning: false
+## modelo de efectos 
+modelo1 <- aov(Tiempo ~ Tamaño * Tipo * Partes, data = Tela)
+summary(modelo1)
+
+## modelo sin triple interaccion
+
+modelo2 <- aov(Tiempo ~ Tamaño * Tipo + Tamaño* Partes + Tipo * Partes, data = Tela)
+summary(modelo2)
+
+
+## modelo sin variables no significativas 
+modelo3 <- aov(Tiempo ~ Tamaño + Tipo, data = Tela )
+summary(modelo3)
+
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+residuales=residuals(modelo3)
+```
+
+# **Validación del modelo**
+
+Posterior a esto realizamos la validacion del modelo para saber si cumple con normalidad, varianza constante e independencia.
+
+```{r}
+#| echo: false
+#| warning: false
+par(mfrow=c(1,3))
+hist(residuales)
+qqPlot(residuales)
+boxplot(residuales, horizontal = T)
+```
+
+## Normalidad
+
+```{r}
+#| echo: false
+#| warning: false
+#normalidad de residuales 
+
+Tela$residuales <- rstandard(modelo3)
+residuales <- Tela$residuales
+
+library(tseries)
+jarque.bera.test(Tela$residuales)
+#si hay normalidad
+```
+
+## Varianza constante
+
+```{r}
+#| echo: false
+#| warning: false
+plot(predict(modelo3),residuales)
+abline(h=0)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#varianza constante (homocedasticidad)
+library(lmtest)
+bptest(modelo3)
+
+#si hay varianza constante 
+```
+
+## Independecia
+
+```{r}
+#| echo: false
+#| warning: false
+par(mfrow=c(1,3))
+plot(residuales) #Orden vs. Residuales
+
+acf(residuales) #ACF
+pacf(residuales) #PACF
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#independencia
+
+dwtest(modelo3)
+bgtest(modelo3)
+#Si hay independencia
+```
+
+## **Modelo de efectos**
+
+$$ Y_{ijkl} = \mu + \alpha_{i} + \beta_{j} + \gamma_{k} +(\alpha\beta)_{ij}+(\alpha\gamma)_{ik}  +(\beta\gamma)_{jk} +(\alpha\beta\gamma)_{ijk} + \varepsilon_{ijkl}   $$ $$ i =1,2,3 $$ $$ j = 1,2,3 $$ $$ k = 1,2,3 $$ $$ l = 1,2,3 $$
+
+## **Modelo de regresión**
+
+$$ Y_{ijk} = \beta_{0}+\beta_{1} (Tiempo_{i})+\beta_{2} (Tamaño_{j})+\beta_{3} (Tipo_{k}) $$ $$ i =1,2,3,..,81 $$
+
+```{r}
+#| echo: false
+#| warning: false
+#𝑌_𝑖𝑗𝑘= Tiempo promedio de fusión
+#β_0 = intersección de la media general.
+#β_1= coeficiente del efecto del tratamiento 1
+#β_2= coeficiente del efecto del tratamiento 2 
+#β_3 = coeficiente del efecto del tratamiento 3
+
+```
+
+## **Anova**
+
+```{r}
+#| echo: false
+#| warning: false
+modelo3 <- aov(Tiempo ~ Tamaño + Tipo, data = Tela )
+summary(modelo3)
+```
+
+## Modelo de efecto ajustado
+
+$$ Y_{ij} = \mu + 25758_{i} + 1992_{j}$$ $$ i = 1,2,3 $$ $$ j = 1,2,3 $$ **Modelo de regresión ajustado**
+
+```{r}
+#| echo: false
+#| warning: false
+## Tabla 
+modelo3 <- lm(Tiempo ~ Tamaño + Tipo, data = Tela )
+summary(modelo3)
+```
+
+# **Modelo ajustado**
+
+$$ Y_{i} = 167.877- 21.852 (Tamaño_{i}) - 6.074 (Tipo_{j}) $$
+
+$$ i =1,2,..,81 $$\
+
+## Elección del mejor tratamiento
+
+```{r}
+#| echo: false
+#| warning: false
+#Mejor tratamiento
+modelo4 <- aov(Tiempo ~ Tratamiento, data = Tela)
+summary(modelo4)
+library(agricolae)
+LSD.test(modelo4, "Tratamiento", console = TRUE, group = FALSE)
+options(max.print = 2000)
+
+#Interpretación
+#1 - 3: Diferencia = 48.33, p-value = 0.0369, IC = [3.01, 93.65]
+#1 - 9: Diferencia = 58.33, p-value = 0.0123, IC = [13.01, 103.65]
+#1 - 12: Diferencia = 53.33, p-value = 0.0217, IC = [8.01, 98.65]
+#1 - 18: Diferencia = 73.33, p-value = 0.0019, IC = [28.01, 118.65]
+#2 - 18: Diferencia = 58.33, p-value = 0.0123, IC = [13.01, 103.65]
+#3 - 4: Diferencia = -58.33, p-value = 0.0123, IC = [-103.65, -13.01]
+#3 - 10: Diferencia = -60.00, p-value = 0.0101, IC = [-105.32, -14.68]
+#3 - 11: Diferencia = -46.67, p-value = 0.0437, IC = [-91.99, -1.35]
+#3 - 19: Diferencia = -61.67, p-value = 0.0083, IC = [-106.99, -16.35]
+#3 - 22: Diferencia = -63.33, p-value = 0.0068, IC = [-108.65, -18.01]
+#3 - 23: Diferencia = -58.33, p-value = 0.0123, IC = [-103.65, -13.01]
+#3 - 25: Diferencia = -50.00, p-value = 0.0310, IC = [-95.32, -4.68]
+#4 - 9: Diferencia = 68.33, p-value = 0.0036, IC = [23.01, 113.65]
+#4 - 12: Diferencia = 63.33, p-value = 0.0068, IC = [18.01, 108.65]
+#4 - 18: Diferencia = 83.33, p-value = 0.0005, IC = [38.01, 128.65]
+#4 - 27: Diferencia = 51.67, p-value = 0.0260, IC = [6.35, 96.99]
+#5 - 9: Diferencia = 51.67, p-value = 0.0260, IC = [6.35, 96.99]
+#5 - 12: Diferencia = 46.67, p-value = 0.0437, IC = [1.35, 91.99]
+#5 - 18: Diferencia = 66.67, p-value = 0.0045, IC = [21.35, 111.99]
+#6 - 18: Diferencia = 54.00, p-value = 0.0201, IC = [8.68, 99.32]
+#7 - 9: Diferencia = 50.67, p-value = 0.0289, IC = [5.35, 95.99]
+#7 - 12: Diferencia = 45.67, p-value = 0.0483, IC = [0.35, 90.99]
+#7 - 18: Diferencia = 65.67, p-value = 0.0051, IC = [20.35, 110.99]
+#8 - 9: Diferencia = 48.33, p-value = 0.0369, IC = [3.01, 93.65]
+#8 - 18: Diferencia = 63.33, p-value = 0.0068, IC = [18.01, 108.65]
+#9 - 10: Diferencia = -70.00, p-value = 0.0029, IC = [-115.32, -24.68]
+
+#Observando las diferencias y los intervalos de confianza, los tratamientos con las mayores diferencias significativas incluyen:
+
+#Comparaciones de tratamiento 1 con tratamientos 9 y 18.
+#Comparaciones de tratamiento 4 con tratamientos 9, 12 y 18.
+#Comparaciones de tratamiento 5 con tratamiento 18.
+
+#Por lo que podemos concluir que el tratamiento 18 es el mejor en términos de 
+#efectividad relativa a otros tratamientos.
+
+```
+
+# **Cálculo de potencia**
+
+```{r}
+#| echo: false
+#| warning: false
+
+#Diferencia de medias entre niveles
+
+#DIF Tamaño
+difTamaño1<- mean(Tela$Tiempo[Tela$Tamaño == 1]) - mean(Tela$Tiempo[Tela$Tamaño == 2])
+abs(difTamaño1)
+difTamaño2<- mean(Tela$Tiempo[Tela$Tamaño == 1]) - mean(Tela$Tiempo[Tela$Tamaño == 3])
+abs(difTamaño2)
+difTamaño3<- mean(Tela$Tiempo[Tela$Tamaño == 3]) - mean(Tela$Tiempo[Tela$Tamaño == 2])
+abs(difTamaño3)
+##minima=9.333333
+# DIF Tipo
+difTipo1<- abs(mean(Tela$Tiempo[Tela$Tipo == 1]) - mean(Tela$Tiempo[Tela$Tipo == 2]))
+difTipo1
+difTipo2<- abs(mean(Tela$Tiempo[Tela$Tipo == 1]) - mean(Tela$Tiempo[Tela$Tipo == 3]))
+difTipo2
+difTipo3<- abs(mean(Tela$Tiempo[Tela$Tipo == 3]) - mean(Tela$Tiempo[Tela$Tipo == 2]))
+difTipo3
+## minima= 7.666667
+# DIF partes 
+difPartes1<- abs(mean(Tela$Tiempo[Tela$Partes == 1]) - mean(Tela$Tiempo[Tela$Partes == 2]))
+difPartes1
+difPartes2<- abs(mean(Tela$Tiempo[Tela$Partes == 1]) - mean(Tela$Tiempo[Tela$Partes == 3]))
+difPartes2
+difPartes3<- abs(mean(Tela$Tiempo[Tela$Partes == 3]) - mean(Tela$Tiempo[Tela$Partes == 2]))
+difPartes3
+##minima= 4.037037
+```
+
+```{r}
+#| echo: false
+#| warning: false
+DTamaño <- sqrt(9.333333^2/(2*var(Tela$Tamaño)))
+DTipo <- sqrt(7.666667^2/(2*var(Tela$Tipo)))
+DPartes <- sqrt(4.037037^2/(2*var(Tela$Partes)))
+
+```
+
+## **Potencia alcanzada con el número de réplicas usadas**
+
+```{r}
+#| echo: false
+#| warning: false
+library(pwr2)
+help("pwr.2way")
+```
+
+### Tamaño y Tipo
+
+```{r}
+#| echo: false
+#| warning: false
+pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 8.032, f.B=6.598,
+         delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL)
+```
+
+### Tamaño y Partes
+
+```{r}
+#| echo: false
+#| warning: false
+pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 8.032, f.B=3.474,
+         delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL)
+```
+
+### Partes y Tipo
+
+```{r}
+#| echo: false
+#| warning: false
+pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 3.474, f.B=6.598,
+         delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL)
+```
+
+## **Muestra para tener una potencia del 90%**
+
+### Tamaño y Tipo
+
+```{r}
+#| echo: false
+#| warning: false
+
+ss.2way(a = 3, b = 3, alpha = 0.05, beta = 0.1, f.A = 8.0328, f.B = 6.5984, delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL, B=100)
+
+```
+
+### Tamaño y Partes
+
+```{r}
+#| echo: false
+#| warning: false
+
+ss.2way(a = 3, b = 3, alpha = 0.05, beta = 0.1, f.A = 8.0328, f.B = 3.4745, delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL, B=100)
+
+```
+
+### Partes y Tipo\*
+
+```{r}
+#| echo: false
+#| warning: false
+ss.2way(a = 3, b = 3, alpha = 0.05, beta = 0.1, f.A = 6.5984, f.B = 3.4745, delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL, B=100)
+```
+
+Para lograr una potencia del 90% es necesario que se realicen 2 replicas por cada tratamiento.
+
+## **Conclusion**
+
+El tamaño de la tela es uno de los factores más significativos en el tiempo de fusión. Las piezas más pequeñas tienden a ser más efectivas en términos de tiempo promedio de fusión en comparación con las piezas medianas y grandes. Esto sugiere que optimizar el tamaño de las piezas puede llevar a mejoras significativas en la eficiencia del proceso.
+
+El tipo de tela es otro factor crucial. Las telas suaves presentan los tiempos de fusión más bajos, con un promedio de aproximadamente 101 segundos. En contraste, las telas rígidas tienen un tiempo de fusión mucho más alto, alrededor de 121 segundos. Las telas viscosas muestran un comportamiento intermedio. Esta información es esencial para la selección del tipo de tela en función de los requisitos de tiempo y eficiencia del proceso.
+
+Para mejorar la eficiencia del proceso de fusión, se recomienda enfocar los esfuerzos en optimizar el tamaño de las piezas y seleccionar cuidadosamente el tipo de tela, dado que estos factores tienen los impactos más significativos en el tiempo de fusión. Las partes de la prenda pueden ser consideradas menos prioritarias en términos de su impacto en el tiempo de fusión, permitiendo una mayor flexibilidad en su diseño sin afectar significativamente la eficiencia del proceso. En resumen, el diseño de experimentos de fusión de telas ha permitido identificar que el tamaño de la tela y el tipo de tela son los factores más influyentes en el tiempo de fusión, con las telas rígidas presentando mayores desafíos en términos de tiempo. La parte de la prenda tiene una influencia menor, lo que permite mayor flexibilidad en su diseño.
