@@ -484,9 +484,9 @@ difPartes3
 ```{r}
 #| echo: false
 #| warning: false
-DTamaño <- sqrt(9.333333^2/(2*var(Tela$Tamaño)))
-DTipo <- sqrt(7.666667^2/(2*var(Tela$Tipo)))
-DPartes <- sqrt(4.037037^2/(2*var(Tela$Partes)))
+DTamaño <- sqrt(9.333333^2/(2*var(Tela$Tiempo)))
+DTipo <- sqrt(7.666667^2/(2*var(Tela$Tiempo)))
+DPartes <- sqrt(4.037037^2/(2*var(Tela$Tiempo)))
 
 ```
 
@@ -504,7 +504,7 @@ help("pwr.2way")
 ```{r}
 #| echo: false
 #| warning: false
-pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 8.032, f.B=6.598,
+pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 0.238, f.B=0.195,
          delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL)
 ```
 
@@ -513,7 +513,7 @@ pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 8.032, f.B=6.598,
 ```{r}
 #| echo: false
 #| warning: false
-pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 8.032, f.B=3.474,
+pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 0.238, f.B=0.102,
          delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL)
 ```
 
@@ -522,9 +522,11 @@ pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 8.032, f.B=3.474,
 ```{r}
 #| echo: false
 #| warning: false
-pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 3.474, f.B=6.598,
+pwr.2way(a=3, b=3, alpha=0.05, size.A=9, size.B=9, f.A= 0.102, f.B=0.195,
          delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL)
 ```
+
+Se observa que la potencia mayor del análisis realizado es del 45%, lo que indica una probabilidad relativamente baja de detectar efectos reales si están presentes en los datos. Esto sugiere la necesidad de aumentar el tamaño de la muestra para mejorar la capacidad del análisis para detectar tales efectos. Un aumento en el tamaño de la muestra podría conducir a una mayor potencia del estudio, lo que aumentaría la probabilidad de detectar diferencias significativas entre los grupos. Esto significa que, para lograr una potencia más alta y que la prueba sea significativa, sería necesario aumentar el número de réplicas. Lo mismo se aplicó a las combinaciones de Tamaño y Partes, y Partes y Tipo, las cuales tampoco alcanzaron el nivel de potencia deseado.
 
 ## **Muestra para tener una potencia del 90%**
 
@@ -556,7 +558,7 @@ ss.2way(a = 3, b = 3, alpha = 0.05, beta = 0.1, f.A = 8.0328, f.B = 3.4745, delt
 ss.2way(a = 3, b = 3, alpha = 0.05, beta = 0.1, f.A = 6.5984, f.B = 3.4745, delta.A=NULL, delta.B=NULL, sigma.A=NULL, sigma.B=NULL, B=100)
 ```
 
-Para lograr una potencia del 90% es necesario que se realicen 2 replicas por cada tratamiento.
+Para alcanzar una potencia del 90%, sería necesario realizar al menos dos réplicas por cada tratamiento. Estas réplicas adicionales son necesarias para que el experimento tenga la capacidad suficiente para detectar efectos verdaderos de manera confiable.
 
 ## **Conclusion**
 
